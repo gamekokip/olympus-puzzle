@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Olympus Puzzle Complete</title>
+<style>
+body{margin:0;font-family:Arial;background:linear-gradient(#8fd3ff,#5aa6e8 30%,#6b53c8 70%,#2b0d46);color:#fff;text-align:center}
+h1{color:gold}
+.top{display:flex;justify-content:center;gap:15px;flex-wrap:wrap}
+.card{background:#4d1f7a;padding:10px 16px;border-radius:10px;border:1px solid gold}
+.board{display:grid;grid-template-columns:repeat(6,72px);gap:6px;justify-content:center;margin:20px auto}
+.cell{width:72px;height:72px;background:#5c238f;border:2px solid gold;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:38px;cursor:pointer}
+.btn{padding:14px 40px;font-size:22px;background:gold;border:none;border-radius:12px;cursor:pointer}
+#msg{height:50px;color:gold;font-size:28px;margin-top:15px}
+.credit{position:fixed;left:15px;bottom:15px;background:#4d1f7a;padding:12px;border:2px solid gold;border-radius:10px}
+.spinleft{position:fixed;right:15px;top:50%;transform:translateY(-50%);background:#4d1f7a;padding:12px;border:2px solid gold;border-radius:10px}
+</style>
+</head>
+<body>
+<h1>⚡ OLYMPUS PUZZLE ⚡</h1>
+
+<div class="top">
+<div class="card">⭐ Poin: <span id="score">0</span></div>
+<div class="card">📈 Level: <span id="level">1</span></div>
+<div class="card">🔄 Spin Digunakan: <span id="spins">0</span></div>
+</div>
+
+<div id="board" class="board"></div>
+
+<button class="btn" onclick="spinBoard()">⚡ SPIN ⚡</button>
+<div id="msg"></div>
+
+<div class="credit">💳 Kredit Poin: <span id="credit">1000</span></div>
+<div class="spinleft">🎯 Sisa Spin: <span id="spinleft">100</span><br><small>Jika habis hubungi:<br>081222222222222</small></div>
+
+<script>
+const S=["⚡","💎","👑","🔱","⭐"];
+const rows=5, cols=6;
+let score=0, level=1, spins=0, credit=1000, spinleft=100;
+
+function rnd(){ return S[Math.floor(Math.random()*S.length)] }
+function drawBoard(){
+ const b=document.getElementById('board'); b.innerHTML='';
+ for(let r=0;r<rows;r++){
+   for(let c=0;c<cols;c++){
+      const d=document.createElement('div');
+      d.className='cell';
+      d.textContent=rnd();
+      d.onclick=()=>matchReward();
+      b.appendChild(d);
+   }
+ }
+}
+function matchReward(){
+ const gain=Math.floor(Math.random()*50)+10;
+ score+=gain;
+ credit+=gain;
+ update();
+ document.getElementById('msg').innerText='⚡ MATCH +' + gain + ' poin';
+}
+function spinBoard(){
+ if(spinleft<=0){
+   document.getElementById('msg').innerText='Spin habis. Hubungi nomor yang tertera.';
+   return;
+ }
+ spinleft--;
+ spins++;
+ const gain=Math.floor(Math.random()*91)+10;
+ score+=gain;
+ credit+=gain;
+ if(spins%10===0){
+   const bonus=Math.floor(Math.random()*2001)+500;
+   score+=bonus;
+   credit+=bonus;
+   document.getElementById('msg').innerText='🏛️ BONUS ROUND +' + bonus + ' poin';
+ } else {
+   document.getElementById('msg').innerText='⚡ SPIN +' + gain + ' poin';
+ }
+ if(score>1000) level=2;
+ if(score>3000) level=3;
+ if(score>7000) level=4;
+ drawBoard();
+ update();
+}
+function update(){
+ scoreEl.textContent=score;
+ levelEl.textContent=level;
+ spinsEl.textContent=spins;
+ creditEl.textContent=credit;
+ spinleftEl.textContent=spinleft;
+}
+const scoreEl=document.getElementById('score');
+const levelEl=document.getElementById('level');
+const spinsEl=document.getElementById('spins');
+const creditEl=document.getElementById('credit');
+const spinleftEl=document.getElementById('spinleft');
+drawBoard(); update();
+</script>
+</body>
+</html>
